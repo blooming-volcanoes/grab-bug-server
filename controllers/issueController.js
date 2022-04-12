@@ -16,3 +16,24 @@ exports.getAnIssue = catchAsyncErrors(async (req, res) => {
     console.log(result);
     res.send(result);
 });
+
+// Read all issues (GET)
+exports.getAllIssues = catchAsyncErrors(async (req, res) => {
+    const result = await Issue.find({}).sort({ createdAt: -1 });
+    res.send(result);
+});
+
+// Update an issue (PUT)
+exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
+    const { issueId } = req.params;
+    const result = await Issue.findByIdAndUpdate({ _id: issueId }, req.body, { new: true });
+    res.send(result);
+});
+
+// Update the status of an issue (PUT)
+
+// Delete an issue (DELETE)
+
+// Read an archived issue (GET)
+
+// Read all archived issues (GET)
