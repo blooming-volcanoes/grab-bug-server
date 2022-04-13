@@ -1,6 +1,10 @@
+/* eslint-disable camelcase */
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
 const Errorhandler = require('../lib/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Issue = require('../models/Issue');
+const Archive = require('../models/Archives');
 
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
@@ -37,6 +41,22 @@ exports.updateStatus = catchAsyncErrors(async (req, res) => {
     res.send(result);
 });
 // Delete an issue (DELETE)
+exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
+    const { issueId } = req.params;
+    const result = await Issue.findByIdAndDelete({ _id: issueId });
+    if (result) {
+        const deleted = {
+            reporter_name: result.reporter_name,
+            status: result.status,
+            bug_category: result.bug_category,
+            bug_description: result.bug_description,
+            project_id: result.project_id,
+        };
+
+        await new Archive(deleted).save();
+        res.send({ message: 'Your issue has been deleted' });
+    }
+});
 
 // Read an archived issue (GET)
 
