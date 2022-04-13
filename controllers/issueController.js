@@ -36,8 +36,8 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
 
 // Update the status of an issue (PUT)
 exports.updateStatus = catchAsyncErrors(async (req, res) => {
-    // const { status } = req.params;   // এই লাইনটা একটু চেক করেন তো, কি হবে ?
-    const result = await Issue.find({ status: 'running' }, req.body, { new: true });
+    const { issueId } = req.params;
+    const result = await Issue.findOne({ _id: issueId }, req.body.status, { new: true });
     res.send(result);
 });
 // Delete an issue (DELETE)
@@ -59,5 +59,14 @@ exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
 });
 
 // Read an archived issue (GET)
+exports.getArchive = catchAsyncErrors(async (req, res) => {
+    const { archiveId } = req.params;
+    const result = await Archive.findOne({ _id: archiveId });
+    res.send(result);
+});
 
 // Read all archived issues (GET)
+exports.getAllArchive = catchAsyncErrors(async (req, res) => {
+    const result = await Archive.find({}).sort({ createdAt: -1 });
+    res.send(result);
+});
