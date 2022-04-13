@@ -8,3 +8,6 @@ exports.createIssues = catchAsyncErrors(async (req, res, next) => {
     const result = await new Issue(issue).save();
     res.send(result);
 });
+
+// get a issue
+exports.getIssue = catchAsyncErrors(async (req, res) => {});
