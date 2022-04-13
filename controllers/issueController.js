@@ -2,12 +2,42 @@ const Errorhandler = require('../lib/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Issue = require('../models/Issue');
 
-// create a issue
-exports.createIssues = catchAsyncErrors(async (req, res, next) => {
+// Create an issue (POST)
+exports.createIssues = catchAsyncErrors(async (req, res) => {
     const issue = req.body;
     const result = await new Issue(issue).save();
     res.send(result);
 });
 
-// get a issue
-exports.getIssue = catchAsyncErrors(async (req, res) => {});
+// Read an issue (GET)
+exports.getAnIssue = catchAsyncErrors(async (req, res) => {
+    const { issueId } = req.params;
+    const result = await Issue.findOne({ _id: issueId });
+    console.log(result);
+    res.send(result);
+});
+
+// Read all issues (GET)
+exports.getAllIssues = catchAsyncErrors(async (req, res) => {
+    const result = await Issue.find({}).sort({ createdAt: -1 });
+    res.send(result);
+});
+
+// Update an issue (PUT)
+exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
+    const { issueId } = req.params;
+    const result = await Issue.findByIdAndUpdate({ _id: issueId }, req.body, { new: true });
+    res.send(result);
+});
+
+// Update the status of an issue (PUT)
+exports.updateStatus = catchAsyncErrors(async (req, res) => {
+    // const { status } = req.params;   // এই লাইনটা একটু চেক করেন তো, কি হবে ?
+    const result = await Issue.find({ status: 'running' }, req.body, { new: true });
+    res.send(result);
+});
+// Delete an issue (DELETE)
+
+// Read an archived issue (GET)
+
+// Read all archived issues (GET)

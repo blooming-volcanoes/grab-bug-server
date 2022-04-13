@@ -4,7 +4,7 @@ const Issue = mongoose.Schema(
     {
         reporter_name: {
             type: String,
-            required: true,
+            required: [true, 'Please give a reporter name'],
         },
         status: {
             type: String,
@@ -13,15 +13,15 @@ const Issue = mongoose.Schema(
         bug_category: {
             type: String,
             default: 'high',
-            required: true,
+            required: [true, 'Please give a bug category'],
         },
         bug_description: {
             type: String,
-            required: true,
+            required: [true, 'Please give a description'],
         },
-        project: {
-            type: mongoose.Types.ObjectId,
-            ref: 'Project',
+        project_id: {
+            type: String,
+            required: [true, 'Project Id is need'],
         },
     },
     { timestamps: true },
