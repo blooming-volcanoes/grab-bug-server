@@ -34,12 +34,13 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
     res.send(result);
 });
 
-// Update the status of an issue (PUT)
-exports.updateStatus = catchAsyncErrors(async (req, res) => {
-    const { issueId } = req.params;
-    const result = await Issue.findOne({ _id: issueId }, req.body.status, { new: true });
-    res.send(result);
-});
+// Update the status of an issue (PUT) : - not useable
+// exports.updateStatus = catchAsyncErrors(async (req, res) => {
+//     const { issueId } = req.params;
+//     const result = await Issue.findOne({ _id: issueId }, req.body.status, { new: true });
+//     res.send(result);
+// });
+
 // Delete an issue (DELETE)
 exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
