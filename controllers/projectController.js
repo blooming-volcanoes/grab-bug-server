@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const { Projects } = require('../models/Project');
 const { deleteProject } = require('../models/Project');
-const Archive = require('../models/Archive');
+const Archive = require('../models/projectArchives');
 // const archive = new Archive;
 
 // Creating post request

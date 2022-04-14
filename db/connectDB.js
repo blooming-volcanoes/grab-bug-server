@@ -2,10 +2,7 @@
 /* eslint-disable camelcase */
 const mongoose = require('mongoose');
 
-const db_uri =
-    process.NODE_ENV === 'production' ? process.env.DB_ATLAS_URI : process.env.DB_LOCAL_URI;
-
-console.log(db_uri);
+const db_uri = process.env.NODE_ENV === 'production' ? process.env.DB_ATLAS_URI : process.env.DB_LOCAL_URI;
 
 const connectDb = async () => {
     try {
