@@ -2,11 +2,17 @@
 // const ErrorHandler = require('../lib/errorHandler');
 // const sendToken = require('../lib/jwt');
 // const sendEmail = require('../lib/sendEmail');
+const mongoose = require('mongoose');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
-const Projects = require('../models/Project');
+const { Projects } = require('../models/Project');
+const { deleteProject } = require('../models/Project');
+const Archive = require('../models/Archive');
+// const archive = new Archive;
 
 // Creating post request
 exports.projects = catchAsyncErrors(async (req, res) => {
+    //  Project creator id
+    req.body.created_By = req.user.id;
     const project = await Projects.create(req.body);
     res.status(200).json({
         success: true,
@@ -52,13 +58,19 @@ exports.editProjectDetails = catchAsyncErrors(async (req, res) => {
 });
 
 // Delete project
-// exports.deleteProject = catchAsyncErrors(async (req, res) => {
-//     const { id } = req.param;
-//     const { name, description, deadline } = req.body;
-//     const projects = await Projects.findById(id);
-//     // projects.r;
-//     res.status(200).json({
-//         success: true,
-//         projects,
-//     });
-// });
+exports.deleteProject = catchAsyncErrors(async (req, res) => {
+    const { id } = req.params;
+    const { name, description, deadline } = req.body;
+    // const projects = await Projects.findById(id);
+
+    let result = await Projects.findOne({ _id: id });
+
+    let swap = new deleteProject(result.toJSON());
+
+    result.remove();
+    swap.save();
+    res.status(200).json({
+        success: true,
+        swap,
+    });
+});

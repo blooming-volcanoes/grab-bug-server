@@ -5,7 +5,7 @@ const ErrorHandler = require('../lib/errorHandler');
 const sendToken = require('../lib/jwt');
 const sendEmail = require('../lib/sendEmail');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
-const Users = require('../models/Users');
+const Users = require('../models/User');
 const generate = require('../middleware/generate');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
@@ -53,7 +53,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             const refreshOtp = await Users.updateOne({
                 email,
                 otp,
-                OTPExpire: Date.now() + 1 * 60 * 1000,
+                OTPExpire: Date.now() + 3 * 60 * 1000,
             });
             console.log(refreshOtp, 'refrest');
             await sendEmail({
@@ -105,6 +105,7 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     if (isMatched) {
         user.otp = undefined;
         user.status = 'approve';
+        console.log(user);
         await user.save({ validateBeforeSave: false });
 
         // By calling this fn i am sending user data with jwt token

@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
-const projectSchema = new mongoose.Schema({
+const archiveSchema = new mongoose.Schema({
+    _id: {
+        type: mongoose.Types.ObjectId,
+    },
+
     name: {
         type: String,
     },
@@ -23,8 +27,4 @@ const projectSchema = new mongoose.Schema({
     },
 });
 
-// hashing the password before save to the DB
-const Projects = mongoose.model('Projects', projectSchema);
-const deleteProject = mongoose.model('deleteProject', projectSchema);
-
-module.exports = { Projects, deleteProject };
+module.exports = mongoose.model('Archives', archiveSchema);
