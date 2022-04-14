@@ -4,34 +4,45 @@
 const Errorhandler = require('../lib/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Issue = require('../models/Issue');
-const Archive = require('../models/Archives');
+const Archive = require('../models/issuesArchives');
 
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
     const issue = req.body;
     const result = await new Issue(issue).save();
-    res.send(result);
+    res.send({
+        success: true,
+        result
+    });
 });
 
 // Read an issue (GET)
 exports.getAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
     const result = await Issue.findOne({ _id: issueId });
-    console.log(result);
-    res.send(result);
+    res.send({
+        success: true,
+        result
+    });
 });
 
 // Read all issues (GET)
 exports.getAllIssues = catchAsyncErrors(async (req, res) => {
     const result = await Issue.find({}).sort({ createdAt: -1 });
-    res.send(result);
+    res.send({
+        success: true,
+        result
+    });
 });
 
 // Update an issue (PUT)
 exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
     const result = await Issue.findByIdAndUpdate({ _id: issueId }, req.body, { new: true });
-    res.send(result);
+    res.send({
+        success: true,
+        result
+    });
 });
 
 // Update the status of an issue (PUT) : - not useable
@@ -46,16 +57,8 @@ exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
     const result = await Issue.findByIdAndDelete({ _id: issueId });
     if (result) {
-        const deleted = {
-            reporter_name: result.reporter_name,
-            status: result.status,
-            bug_category: result.bug_category,
-            bug_description: result.bug_description,
-            project_id: result.project_id,
-        };
-
-        await new Archive(deleted).save();
-        res.send({ message: 'Your issue has been deleted' });
+        await new Archive(result.toJSON()).save();
+        res.send({success: true, message: 'Your issue has been deleted' });
     }
 });
 
@@ -63,11 +66,17 @@ exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
 exports.getArchive = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
     const result = await Archive.findOne({ _id: issueId });
-    res.send(result);
+    res.send({
+        success: true,
+        result
+    });
 });
 
 // Read all archived issues (GET)
 exports.getAllArchive = catchAsyncErrors(async (req, res) => {
     const result = await Archive.find({}).sort({ createdAt: -1 });
-    res.send(result);
+    res.send({
+        success: true,
+        result
+    });
 });
