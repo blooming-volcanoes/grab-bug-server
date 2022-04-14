@@ -61,8 +61,8 @@ exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
 
 // Read an archived issue (GET)
 exports.getArchive = catchAsyncErrors(async (req, res) => {
-    const { archiveId } = req.params;
-    const result = await Archive.findOne({ _id: archiveId });
+    const { issueId } = req.params;
+    const result = await Archive.findOne({ _id: issueId });
     res.send(result);
 });
 

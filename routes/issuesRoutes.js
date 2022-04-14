@@ -8,11 +8,28 @@ const {
     getArchive,
     getAllArchive,
 } = require('../controllers/issueController');
-// all routes for issues
-router.get('/', getAllIssues);
+/*
+ all major routes routes for issues
+*/
+
+// get all issues endpoint
+
+router.get('/all', getAllIssues);
+
+// get, put, delete, issues endpoint
+
 router.route('/issue/:issueId').get(getAnIssue).put(updateAnIssue).delete(deleteAnIssue);
-router.post('/createIssues', createIssues);
-router.get('/getAllArchive', getAllArchive);
-router.get('/getArchive/:archiveId', getArchive);
+
+// post a issue
+
+router.post('/issue', createIssues);
+
+// get all deleted issue
+
+router.get('/all', getAllArchive);
+
+// delete and issue and store in archives
+
+router.get('/archives/:issueId', getArchive);
 
 module.exports = router;
