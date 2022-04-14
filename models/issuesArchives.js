@@ -26,6 +26,6 @@ const Archive = mongoose.Schema(
     },
     { timestamps: true },
 );
-const model = mongoose.model('archive', Archive);
+const model = mongoose.model('issueArchive', Archive);
 
 module.exports = model;
