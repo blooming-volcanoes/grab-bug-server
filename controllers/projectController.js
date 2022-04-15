@@ -13,7 +13,7 @@ const { DeleteProject } = require('../models/Project');
 // Creating post request
 exports.projects = catchAsyncErrors(async (req, res) => {
     //  Project creator id
-    req.body.created_By = req.user.id;
+    // req.body.created_By = req.user.id;
     const project = await Projects.create(req.body);
     res.status(200).json({
         success: true,
