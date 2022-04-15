@@ -5,6 +5,8 @@ const {
     singleProject,
     editProjectDetails,
     deleteProject,
+    archiveProject,
+    singleArchive,
 } = require('../controllers/projectController');
 const { isAuthenticated } = require('../middleware/auth');
 
@@ -15,9 +17,12 @@ router.route('/project/all').get(allProject);
 router
     .route('/project/:id')
     .get(isAuthenticated, singleProject)
-    .put(isAuthenticated, editProjectDetails);
+    .put(isAuthenticated, editProjectDetails)
+    .delete(deleteProject);
 
-router.route('/deleteProject/:id').get(isAuthenticated, deleteProject);
 // router.route('/projects/:id').put();
+
+router.route('/archiveProjects').get(archiveProject);
+router.route('/archive/:id').get(singleArchive);
 
 module.exports = router;

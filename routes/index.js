@@ -8,8 +8,8 @@ const userRouter = require('./userRoutes');
 const issuesRoutes = require('./issuesRoutes');
 const projecRoutes = require('./projectRoutes');
 
-router.use('/auth', userRouter);
-router.use('/issues', issuesRoutes);
-router.use('/v1', projecRoutes);
+router.use(userRouter);
+router.use(issuesRoutes);
+router.use(projecRoutes);
 
 module.exports = router;

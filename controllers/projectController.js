@@ -5,8 +5,9 @@
 const mongoose = require('mongoose');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const { Projects } = require('../models/Project');
-const { deleteProject } = require('../models/Project');
-const Archive = require('../models/projectArchives');
+const { DeleteProject } = require('../models/Project');
+// const { find } = require('../models/projectArchives');
+// const Archive = require('../models/projectArchives');
 // const archive = new Archive;
 
 // Creating post request
@@ -48,7 +49,7 @@ exports.editProjectDetails = catchAsyncErrors(async (req, res) => {
     const projects = await Projects.findByIdAndUpdate(
         id,
         { name, description, deadline },
-        { runValidators: false }
+        { runValidators: false },
     );
     console.log(projects);
     res.status(200).json({
@@ -65,12 +66,36 @@ exports.deleteProject = catchAsyncErrors(async (req, res) => {
 
     let result = await Projects.findOne({ _id: id });
 
-    let swap = new deleteProject(result.toJSON());
+    let swap = new DeleteProject(result.toJSON());
 
     result.remove();
     swap.save();
     res.status(200).json({
         success: true,
         swap,
+    });
+});
+
+// Get Archived Project
+
+exports.archiveProject = catchAsyncErrors(async (req, res) => {
+    const result = await DeleteProject.find({});
+
+    res.status(200).json({
+        success: true,
+        result,
+    });
+});
+
+//Single archived project
+
+exports.singleArchive = catchAsyncErrors(async (req, res) => {
+    const { id } = req.params;
+
+    const result = await DeleteProject.findById(id);
+
+    res.status(200).json({
+        success: true,
+        result,
     });
 });

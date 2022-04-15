@@ -20,7 +20,7 @@ console.log(process.env.JWT_EXPIRE, 'ex');
 
 // import routes
 
-app.use('/api', routes);
+app.use(routes);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
