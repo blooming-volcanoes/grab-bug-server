@@ -25,6 +25,6 @@ const projectSchema = new mongoose.Schema({
 
 // hashing the password before save to the DB
 const Projects = mongoose.model('Projects', projectSchema);
-const deleteProject = mongoose.model('deleteProject', projectSchema);
+const DeleteProject = mongoose.model('deleteProject', projectSchema);
 
-module.exports = { Projects, deleteProject };
+module.exports = { Projects, DeleteProject };
