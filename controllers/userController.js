@@ -7,6 +7,7 @@ const sendEmail = require('../lib/sendEmail');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Users = require('../models/User');
 const generate = require('../middleware/generate');
+const User = require('../models/User');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -50,11 +51,14 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             if user want get another otp,
             Existing Otp will be replaced with refres otp
             */
-            const refreshOtp = await Users.updateOne({
+            const refreshOtp = await Users.findOne({
                 email,
-                otp,
-                OTPExpire: Date.now() + 3 * 60 * 1000,
             });
+
+            (refreshOtp.otp = otp),
+                (refreshOtp.OTPExpire = Date.now() + 3 * 60 * 1000),
+                await refreshOtp.save();
+
             console.log(refreshOtp, 'refrest');
             await sendEmail({
                 email: req.body.email,
@@ -82,9 +86,9 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     const { email } = req.body;
 
     // finding otp with Date value
-    const user = await Users.findOne({ email, OTPExpire: { $gt: Date.now() } });
+    const user = await Users.find({ email, OTPExpire: { $gt: Date.now() } });
 
-    console.log('hlloo ', user);
+    console.log('hlloo ', user[0].otp);
 
     // If OTP expire, this error will be shown
     if (!user) {
@@ -92,8 +96,10 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Comparing both OTP to check whether true
-    const isMatched = await bcrypt.compare(req.body.code, user.otp);
-    console.log(user.otp, 'he', isMatched, 'lam', req.body.code);
+    const isMatched = await bcrypt.compare(req.body.code, user[0].otp);
+    console.log(isMatched);
+
+    console.log(user[0].otp, 'he', isMatched, 'lam', req.body.code);
 
     if (!isMatched) {
         return next(new ErrorHandler('You otp didn not matched'));
@@ -103,10 +109,11 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
 
     // if otp matched status will updated and otp will be undefined
     if (isMatched) {
-        user.otp = undefined;
-        user.status = 'approve';
         console.log(user);
-        await user.save({ validateBeforeSave: false });
+        user[0].otp = undefined;
+        user[0].status = 'approve';
+        console.log(user);
+        user[0].save();
 
         // By calling this fn i am sending user data with jwt token
         sendToken(user, res, 200);
@@ -211,4 +218,26 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save();
 
     sendToken(user, res, 200);
+});
+
+// allUsers search
+
+exports.allUsers = catchAsyncErrors(async (req, res, next) => {
+    const keyword = req.query.search
+        ? {
+              $or: [
+                  { name: { $regex: req.query.search, $options: 'i' } },
+                  { email: { $regex: req.query.search, $options: 'i' } },
+              ],
+          }
+        : {};
+
+    // console.log(req.user);
+
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+
+    res.status(200).json({
+        success: true,
+        users,
+    });
 });
