@@ -6,6 +6,13 @@ const Issue = mongoose.Schema(
             type: String,
             required: [true, 'Please give a reporter name'],
         },
+        title: {
+            type: String,
+        },
+        severity: {
+            type: String,
+            enum: ['low', 'moderate', 'high', 'extreme'],
+        },
         status: {
             type: String,
             default: 'reported',
