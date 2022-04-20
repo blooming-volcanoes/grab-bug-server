@@ -19,7 +19,6 @@ connectDb();
 console.log(process.env.JWT_EXPIRE, 'ex');
 
 // import routes
-
 app.use(routes);
 
 app.get('/', (req, res) => {

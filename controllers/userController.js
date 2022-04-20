@@ -115,8 +115,10 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
         console.log(user);
         user[0].save();
 
+        const getUser = user[0];
+
         // By calling this fn i am sending user data with jwt token
-        sendToken(user, res, 200);
+        sendToken(getUser, res, 200);
     }
 });
 

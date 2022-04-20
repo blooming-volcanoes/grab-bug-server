@@ -7,9 +7,11 @@ const router = require('express').Router();
 const userRouter = require('./userRoutes');
 const issuesRoutes = require('./issuesRoutes');
 const projecRoutes = require('./projectRoutes');
+const chatRoutes = require('./chatRoutes');
 
 router.use(userRouter);
 router.use(issuesRoutes);
 router.use(projecRoutes);
+router.use(chatRoutes);
 
 module.exports = router;
