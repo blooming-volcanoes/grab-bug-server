@@ -7,7 +7,9 @@ const router = require('express').Router();
 const userRouter = require('./userRoutes');
 const issuesRoutes = require('./issuesRoutes');
 const projecRoutes = require('./projectRoutes');
+const socketRoutes = require('./socketRoutes')
 
+router.use(socketRoutes); 
 router.use(userRouter);
 router.use(issuesRoutes);
 router.use(projecRoutes);
