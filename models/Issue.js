@@ -15,7 +15,7 @@ const Issue = mongoose.Schema(
         },
         status: {
             type: String,
-            default: 'reported',
+            enum: ['reported', 'approved', 'rejected'],
         },
         bugCategory: {
             type: String,
