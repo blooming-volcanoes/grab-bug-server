@@ -86,9 +86,9 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     const { email } = req.body;
 
     // finding otp with Date value
-    const user = await Users.find({ email, OTPExpire: { $gt: Date.now() } });
+    const user = await Users.findOne({ email, OTPExpire: { $gt: Date.now() } });
 
-    console.log('hlloo ', user[0].otp);
+    console.log('hlloo ', user.otp);
 
     // If OTP expire, this error will be shown
     if (!user) {
@@ -96,10 +96,10 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     }
 
     // Comparing both OTP to check whether true
-    const isMatched = await bcrypt.compare(req.body.code, user[0].otp);
+    const isMatched = await bcrypt.compare(req.body.code, user.otp);
     console.log(isMatched);
 
-    console.log(user[0].otp, 'he', isMatched, 'lam', req.body.code);
+    console.log(user.otp, 'he', isMatched, 'lam', req.body.code);
 
     if (!isMatched) {
         return next(new ErrorHandler('You otp didn not matched'));
@@ -110,12 +110,13 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     // if otp matched status will updated and otp will be undefined
     if (isMatched) {
         console.log(user);
-        user[0].otp = undefined;
-        user[0].status = 'approve';
+        user.otp = undefined;
+        user.status = 'approve';
+        user.OTPExpire = undefined;
         console.log(user);
-        user[0].save();
+        user.save();
 
-        const getUser = user[0];
+        const getUser = user;
 
         // By calling this fn i am sending user data with jwt token
         sendToken(getUser, res, 200);
