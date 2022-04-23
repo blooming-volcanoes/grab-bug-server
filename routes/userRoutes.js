@@ -6,6 +6,7 @@ const {
     resetPassword,
     matchOtp,
     allUsers,
+    userProfile,
 } = require('../controllers/userController');
 const { isAuthenticated } = require('../middleware/auth');
 
@@ -24,5 +25,7 @@ router.route('/password/reset/:token').put(resetPassword);
 router.route('/otp').post(matchOtp);
 
 router.route('/users').get(isAuthenticated, allUsers);
+
+router.route('/me').get(isAuthenticated, userProfile);
 
 module.exports = router;

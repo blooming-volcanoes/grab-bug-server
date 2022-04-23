@@ -243,3 +243,15 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
         users,
     });
 });
+
+// get user Profile
+
+exports.userProfile = catchAsyncErrors(async (req, res, next) => {
+    const id = req.user._id;
+    const user = await User.findById(id);
+
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});

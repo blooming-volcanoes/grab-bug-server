@@ -41,37 +41,34 @@ exports.accessChat = catchAsyncErrors(async (req, res) => {
             isGroupChat: false,
             users: [req.user._id, userId],
         };
-    }
+        try {
+            const createdChat = await Chat.create(chatData);
 
-    try {
-        const createdChat = await Chat.create(chatData);
+            const fullChat = await Chat.findOne({
+                _id: createdChat._id,
+            }).populate('users', '-password');
 
-        const fullChat = await Chat.findOne({
-            _id: createdChat._id,
-        }).populate('users', '-password');
-
-        res.status(200).json({
-            success: true,
-            fullChat,
-        });
-    } catch (error) {
-        res.status(400).json({
-            success: false,
-            message: error.message,
-        });
+            res.status(200).json({
+                success: true,
+                fullChat,
+            });
+        } catch (error) {
+            res.status(400).json({
+                success: false,
+                message: error.message,
+            });
+        }
     }
 });
 
 // Fetching Chat
 
 exports.fetchChats = catchAsyncErrors(async (req, res) => {
-    const chat = await Chat.find(
-        { users: { $elemMatch: { $eq: req.user._id } } }
-            .populate('users', '-password')
-            .populate('grouptAdmin', '-password')
-            .populate('latestMessage')
-            .sort({ upadatedAt: -1 }),
-    );
+    const chat = await Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+        .populate('users', '-password')
+        .populate('groupAdmin', '-password')
+        .populate('latestMessage')
+        .sort({ upadatedAt: -1 });
 
     const result = await User.populate(chat, {
         path: 'latestMessage.sender',
