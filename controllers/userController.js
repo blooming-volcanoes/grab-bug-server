@@ -55,9 +55,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
                 email,
             });
 
-            (refreshOtp.otp = otp),
-                (refreshOtp.OTPExpire = Date.now() + 3 * 60 * 1000),
-                await refreshOtp.save();
+            refreshOtp.otp = otp;
+            refreshOtp.OTPExpire = Date.now() + 3 * 60 * 1000;
+            await refreshOtp.save();
 
             console.log(refreshOtp, 'refrest');
             await sendEmail({
