@@ -8,8 +8,6 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 // Get all message
 
 exports.allMessage = catchAsyncErrors(async (req, res) => {
-    console.log('ekahnel');
-
     try {
         const messages = await Message.find({ chat: req.params.chatId })
             .populate('sender', 'name pic email')

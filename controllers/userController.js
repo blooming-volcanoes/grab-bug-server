@@ -27,7 +27,6 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     // Use try catch cause of async fn, to detect unnecessay bug easily
     try {
         if (!user) {
-            console.log('heoll');
             const newUser = await Users.create({
                 email,
                 password,
@@ -59,7 +58,6 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             refreshOtp.OTPExpire = Date.now() + 3 * 60 * 1000;
             await refreshOtp.save();
 
-            console.log(refreshOtp, 'refrest');
             await sendEmail({
                 email: req.body.email,
                 subject: 'Issue Tracker  Verify OTP',
@@ -88,8 +86,6 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     // finding otp with Date value
     const user = await Users.findOne({ email, OTPExpire: { $gt: Date.now() } });
 
-    console.log('hlloo ', user.otp);
-
     // If OTP expire, this error will be shown
     if (!user) {
         return next(new ErrorHandler('Your otp expired'));
@@ -97,23 +93,17 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
 
     // Comparing both OTP to check whether true
     const isMatched = await bcrypt.compare(req.body.code, user.otp);
-    console.log(isMatched);
-
-    console.log(user.otp, 'he', isMatched, 'lam', req.body.code);
 
     if (!isMatched) {
         return next(new ErrorHandler('You otp didn not matched'));
     }
 
-    console.log(isMatched);
-
     // if otp matched status will updated and otp will be undefined
     if (isMatched) {
-        console.log(user);
         user.otp = undefined;
         user.status = 'approve';
         user.OTPExpire = undefined;
-        console.log(user);
+
         user.save();
 
         const getUser = user;
@@ -164,8 +154,6 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
     // Get ResetPassword Token
     const resetToken = user.getResetPasswordToken();
-
-    console.log(resetToken.toString());
 
     await user.save({ validateBeforeSave: false });
 
@@ -234,8 +222,6 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
               ],
           }
         : {};
-
-    // console.log(req.user);
 
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
 

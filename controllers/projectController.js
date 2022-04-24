@@ -44,14 +44,13 @@ exports.allProject = catchAsyncErrors(async (req, res) => {
 // Edit project
 exports.editProjectDetails = catchAsyncErrors(async (req, res) => {
     const { id } = req.params;
-    console.log(id);
     const { name, description, deadline } = req.body;
     const projects = await Projects.findByIdAndUpdate(
         id,
         { name, description, deadline },
         { runValidators: false },
     );
-    console.log(projects);
+
     res.status(200).json({
         success: true,
         projects,

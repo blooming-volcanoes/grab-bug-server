@@ -16,8 +16,6 @@ app.use(express.json());
 // connect with mongoDb function
 connectDb();
 
-console.log(process.env.JWT_EXPIRE, 'ex');
-
 // import routes
 app.use(routes);
 
@@ -25,6 +23,47 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 app.use(errorMiddleware);
-app.listen(port, () => {
+
+const server = app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
+});
+
+const io = require('socket.io')(server, {
+    pingTimeout: 60000,
+    cors: {
+        origin: 'http://localhost:3000',
+    },
+});
+
+io.on('connection', (socket) => {
+    console.log('Connedted to socket.io');
+
+    socket.on('setup', (userData) => {
+        socket.join(userData._id);
+        console.log(userData._id);
+        socket.emit('connected');
+    });
+
+    // Joining Chat room
+    socket.on('join chat', (room) => {
+        socket.join(room);
+        console.log('User joined Room:' + room);
+    });
+
+    // Typing indicator
+    socket.on('typing', (room) => socket.in(room).emit('typing'));
+    socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
+
+    socket.on('new message', (newMessageRecieved) => {
+        let chat = newMessageRecieved.chat;
+        console.log(newMessageRecieved);
+
+        if (!chat.users) return console.log('Chat.users not defined');
+
+        chat.users.forEach((user) => {
+            if (user._id === newMessageRecieved.sender._id) return;
+
+            socket.in(user._id).emit('message recieved', newMessageRecieved);
+        });
+    });
 });
