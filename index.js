@@ -5,12 +5,15 @@ require('dotenv').config();
 const connectDb = require('./db/connectDB');
 const routes = require('./routes/index');
 
-const app = express();
+const app = require('express')();
+
 const port = process.env.PORT || 5000;
+
 // middleware
 const errorMiddleware = require('./middleware/error');
 
 app.use(cors());
+
 app.use(express.json());
 
 // connect with mongoDb function
@@ -23,9 +26,11 @@ console.log(process.env.JWT_EXPIRE, 'ex');
 app.use(routes);
 
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('hello');
 });
+
 app.use(errorMiddleware);
+const test = require('./controllers/socketController');
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
