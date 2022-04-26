@@ -5,6 +5,7 @@ const {
     forgotPassword,
     resetPassword,
     matchOtp,
+    getAllUsers,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -20,5 +21,7 @@ router.route('/password/forget').post(forgotPassword);
 router.route('/password/reset/:token').put(resetPassword);
 
 router.route('/otp').post(matchOtp);
+
+router.route('/users').get(getAllUsers);
 
 module.exports = router;
