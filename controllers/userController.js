@@ -224,3 +224,13 @@ exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
         users,
     });
 });
+
+exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params;
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});

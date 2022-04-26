@@ -6,6 +6,7 @@ const {
     resetPassword,
     matchOtp,
     getAllUsers,
+    editUserRole,
 } = require('../controllers/userController');
 
 const router = express.Router();
@@ -23,5 +24,7 @@ router.route('/password/reset/:token').put(resetPassword);
 router.route('/otp').post(matchOtp);
 
 router.route('/users').get(getAllUsers);
+
+router.route('/user/:id').put(editUserRole);
 
 module.exports = router;
