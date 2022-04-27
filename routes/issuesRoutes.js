@@ -14,7 +14,7 @@ const {
 
 // get all issues endpoint
 
-router.get('/all', getAllIssues);
+router.get('/issue/all', getAllIssues);
 
 // get, put, delete, issues endpoint
 
