@@ -25,6 +25,6 @@ router.route('/otp').post(matchOtp);
 
 router.route('/users').get(getAllUsers);
 
-router.route('/user/:id').put(editUserRole);
+router.route('/user').put(editUserRole);
 
 module.exports = router;

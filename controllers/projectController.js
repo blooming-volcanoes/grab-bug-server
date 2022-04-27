@@ -13,8 +13,7 @@ const { DeleteProject } = require('../models/Project');
 // Creating post request
 exports.projects = catchAsyncErrors(async (req, res) => {
     //  Project creator id
-    req.body.created_By = req.user.id;
-    const project = await Projects.create(req.body);
+    const project = await Projects.create({ ...req.body, createdBy: req.user._id });
     res.status(200).json({
         success: true,
         project,
@@ -25,7 +24,18 @@ exports.projects = catchAsyncErrors(async (req, res) => {
 
 exports.singleProject = catchAsyncErrors(async (req, res) => {
     const { id } = req.params;
-    const project = await Projects.findById(id);
+    const project = await Projects.findById(id)
+        .populate('assignedPeople.assignedUser', 'name email')
+        .populate('createdBy', 'email name');
+    res.status(200).json({
+        success: true,
+        project,
+    });
+});
+
+exports.singleProjectWithAssignedUser = catchAsyncErrors(async (req, res) => {
+    const { id } = req.params;
+    const project = await Projects.findById(id).populate('assignedPeople');
     res.status(200).json({
         success: true,
         project,
