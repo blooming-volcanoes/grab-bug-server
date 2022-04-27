@@ -2,26 +2,34 @@ const mongoose = require('mongoose');
 
 const Issue = mongoose.Schema(
     {
-        reporter_name: {
+        reporterName: {
             type: String,
             required: [true, 'Please give a reporter name'],
         },
+        title: {
+            type: String,
+        },
+        severity: {
+            type: String,
+            enum: ['low', 'moderate', 'high', 'extreme'],
+        },
         status: {
             type: String,
-            default: 'reported',
+            enum: ['reported', 'approved', 'rejected'],
         },
-        bug_category: {
+        bugCategory: {
             type: String,
             default: 'high',
             required: [true, 'Please give a bug category'],
         },
-        bug_description: {
+        bugDescription: {
             type: String,
             required: [true, 'Please give a description'],
         },
-        project_id: {
-            type: String,
-            required: [true, 'Project Id is need'],
+        project: {
+            type: mongoose.SchemaTypes.ObjectId,
+            ref: 'Projects',
+            required: [true, 'Project Id is needed'],
         },
     },
     { timestamps: true },

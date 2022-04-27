@@ -7,6 +7,7 @@ const sendEmail = require('../lib/sendEmail');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Users = require('../models/User');
 const generate = require('../middleware/generate');
+const User = require('../models/User');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -211,4 +212,25 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     await user.save();
 
     sendToken(user, res, 200);
+});
+
+/*
+get all users
+*/
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+    const users = await User.find({});
+    res.status(200).json({
+        success: true,
+        users,
+    });
+});
+
+exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params;
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
+    res.status(200).json({
+        success: true,
+        user,
+    });
 });

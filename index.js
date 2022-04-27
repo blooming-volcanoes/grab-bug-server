@@ -22,10 +22,15 @@ console.log(process.env.JWT_EXPIRE, 'ex');
 
 app.use(routes);
 
+app.get('/hi', (req, res) => {
+    res.send('hi');
+    console.log('Hi');
+});
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 app.use(errorMiddleware);
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+    console.log(`Example app listening at port ${port}`);
 });
