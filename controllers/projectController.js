@@ -33,15 +33,6 @@ exports.singleProject = catchAsyncErrors(async (req, res) => {
     });
 });
 
-exports.singleProjectWithAssignedUser = catchAsyncErrors(async (req, res) => {
-    const { id } = req.params;
-    const project = await Projects.findById(id).populate('assignedPeople');
-    res.status(200).json({
-        success: true,
-        project,
-    });
-});
-
 // Get all project
 exports.allProject = catchAsyncErrors(async (req, res) => {
     const projects = await Projects.find({});
