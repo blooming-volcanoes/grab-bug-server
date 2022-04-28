@@ -7,6 +7,8 @@ const {
     matchOtp,
     allUsers,
     userProfile,
+    getAllUsers,
+    editUserRole,
 } = require('../controllers/userController');
 const { isAuthenticated } = require('../middleware/auth');
 
@@ -24,8 +26,12 @@ router.route('/password/reset/:token').put(resetPassword);
 
 router.route('/otp').post(matchOtp);
 
-router.route('/users').get(isAuthenticated, allUsers);
+router.route('/searchUser').get(isAuthenticated, allUsers);
 
 router.route('/me').get(isAuthenticated, userProfile);
+
+router.route('/users').get(getAllUsers);
+
+router.route('/user/:id').put(editUserRole);
 
 module.exports = router;

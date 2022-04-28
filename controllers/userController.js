@@ -232,12 +232,32 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
     });
 });
 
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+    const users = await User.find({});
+    res.status(200).json({
+        success: true,
+        users,
+    });
+});
+
 // get user Profile
 
 exports.userProfile = catchAsyncErrors(async (req, res, next) => {
     const id = req.user._id;
     const user = await User.findById(id);
 
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+// edit user role
+
+exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
+    const { id } = req.params;
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
     res.status(200).json({
         success: true,
         user,

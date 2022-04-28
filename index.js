@@ -5,12 +5,15 @@ require('dotenv').config();
 const connectDb = require('./db/connectDB');
 const routes = require('./routes/index');
 
-const app = express();
+const app = require('express')();
+
 const port = process.env.PORT || 5000;
+
 // middleware
 const errorMiddleware = require('./middleware/error');
 
 app.use(cors());
+
 app.use(express.json());
 
 // connect with mongoDb function
@@ -19,9 +22,15 @@ connectDb();
 // import routes
 app.use(routes);
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get('/hi', (req, res) => {
+    res.send('hi');
+    console.log('Hi');
 });
+
+app.get('/', (req, res) => {
+    res.send('hello');
+});
+
 app.use(errorMiddleware);
 
 const server = app.listen(port, () => {
