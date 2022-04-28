@@ -9,10 +9,11 @@ const Archive = require('../models/issuesArchives');
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
     const issue = req.body;
+    console.log(issue);
     const result = await new Issue(issue).save();
     res.send({
         success: true,
-        result
+        result,
     });
 });
 
@@ -22,7 +23,7 @@ exports.getAnIssue = catchAsyncErrors(async (req, res) => {
     const result = await Issue.findOne({ _id: issueId });
     res.send({
         success: true,
-        result
+        result,
     });
 });
 
@@ -31,7 +32,7 @@ exports.getAllIssues = catchAsyncErrors(async (req, res) => {
     const result = await Issue.find({}).sort({ createdAt: -1 });
     res.send({
         success: true,
-        result
+        result,
     });
 });
 
@@ -41,7 +42,7 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
     const result = await Issue.findByIdAndUpdate({ _id: issueId }, req.body, { new: true });
     res.send({
         success: true,
-        result
+        result,
     });
 });
 
@@ -58,7 +59,7 @@ exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {
     const result = await Issue.findByIdAndDelete({ _id: issueId });
     if (result) {
         await new Archive(result.toJSON()).save();
-        res.send({success: true, message: 'Your issue has been deleted' });
+        res.send({ success: true, message: 'Your issue has been deleted' });
     }
 });
 
@@ -68,7 +69,7 @@ exports.getArchive = catchAsyncErrors(async (req, res) => {
     const result = await Archive.findOne({ _id: issueId });
     res.send({
         success: true,
-        result
+        result,
     });
 });
 
@@ -77,6 +78,6 @@ exports.getAllArchive = catchAsyncErrors(async (req, res) => {
     const result = await Archive.find({}).sort({ createdAt: -1 });
     res.send({
         success: true,
-        result
+        result,
     });
 });
