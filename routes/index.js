@@ -9,11 +9,13 @@ const issuesRoutes = require('./issuesRoutes');
 const projecRoutes = require('./projectRoutes');
 const chatRoutes = require('./chatRoutes');
 const messageRoutes = require('./messageRoutes');
+const FileRoutes = require('./FileRoutes');
 
 router.use(userRouter);
 router.use(issuesRoutes);
 router.use(projecRoutes);
 router.use(chatRoutes);
 router.use(messageRoutes);
+router.use(FileRoutes);
 
 module.exports = router;

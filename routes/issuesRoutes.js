@@ -7,7 +7,9 @@ const {
     deleteAnIssue,
     getArchive,
     getAllArchive,
+    uploadAttachments,
 } = require('../controllers/issueController');
+const upload = require('../lib/multer');
 /*
  all major routes routes for issues
 */

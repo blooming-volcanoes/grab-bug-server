@@ -5,6 +5,7 @@ const Errorhandler = require('../lib/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Issue = require('../models/Issue');
 const Archive = require('../models/issuesArchives');
+const cloudinary = require('../lib/cloudinary');
 
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
