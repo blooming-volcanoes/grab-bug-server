@@ -13,7 +13,7 @@ const { DeleteProject } = require('../models/Project');
 // Creating post request
 exports.projects = catchAsyncErrors(async (req, res) => {
     //  Project creator id
-    req.body.created_By = req.user.id;
+    // req.body.created_By = req.user.id;
     const project = await Projects.create(req.body);
     res.status(200).json({
         success: true,
@@ -44,14 +44,13 @@ exports.allProject = catchAsyncErrors(async (req, res) => {
 // Edit project
 exports.editProjectDetails = catchAsyncErrors(async (req, res) => {
     const { id } = req.params;
-    console.log(id);
     const { name, description, deadline } = req.body;
     const projects = await Projects.findByIdAndUpdate(
         id,
         { name, description, deadline },
         { runValidators: false },
     );
-    console.log(projects);
+
     res.status(200).json({
         success: true,
         projects,
