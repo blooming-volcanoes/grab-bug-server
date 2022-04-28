@@ -54,39 +54,19 @@ io.on('connection', (socket) => {
         // socket.emit("me", userData._id);
     });
 
-    // socket.emit("me", socket.id);
-    // // Audio and video Calling Section
+    socket.emit('me', socket.id);
+    // console.log(socket.id);
+    socket.on('disconnect', () => {
+        socket.broadcast.emit('callEnded');
+    });
 
-    // socket.on("callUser", ({ userToCall, signalData, from, name }) => {
-    //     console.log(userToCall, from, name);
-    //     io.to(userToCall).emit("callUser", {
-    //         signal: signalData,
-    //         from,
-    //         name
-    //     })
-    // })
+    socket.on('callUser', ({ userToCall, signalData, from, name }) => {
+        io.to(userToCall).emit('callUser', { signal: signalData, from, name });
+    });
 
-    // socket.on("updateMyMedia", ({type, currentMediaStatus})=>{
-    //     // console.log(updateMyMedia, type);
-    //     socket.broadcast.emit("updateUserMedia", {
-    //         type, currentMediaStatus
-    //     })
-    // })
-
-    // // answering call
-    // socket.on("answerCall", (data)=>{
-    //     socket.broadcast.emit("updateUserMedia", {
-    //         type: data.type,
-    //         currentMediaStatus: data.myMediaStatus
-    //     });
-
-    //     io.to(data.to).emit("callAccepted", data);
-    // })
-
-    // // Ending Call
-    // socket.on("endCall", ({id})=>{
-    //     io.to(id).emit("endCall")
-    // })
+    socket.on('answerCall', (data) => {
+        io.to(data.to).emit('callAccepted', data.signal);
+    });
 
     // Joining Chat room
     socket.on('join chat', (room) => {
