@@ -36,13 +36,48 @@ const io = require('socket.io')(server, {
 });
 
 io.on('connection', (socket) => {
-    console.log('Connedted to socket.io');
+    // console.log('Connedted to socket.io');
 
     socket.on('setup', (userData) => {
         socket.join(userData._id);
         console.log(userData._id);
         socket.emit('connected');
+        // socket.emit("me", userData._id);
     });
+
+    // socket.emit("me", socket.id);
+    // // Audio and video Calling Section
+
+    // socket.on("callUser", ({ userToCall, signalData, from, name }) => {
+    //     console.log(userToCall, from, name);
+    //     io.to(userToCall).emit("callUser", {
+    //         signal: signalData,
+    //         from,
+    //         name
+    //     })
+    // })
+
+    // socket.on("updateMyMedia", ({type, currentMediaStatus})=>{
+    //     // console.log(updateMyMedia, type);
+    //     socket.broadcast.emit("updateUserMedia", {
+    //         type, currentMediaStatus
+    //     })
+    // })
+
+    // // answering call
+    // socket.on("answerCall", (data)=>{
+    //     socket.broadcast.emit("updateUserMedia", {
+    //         type: data.type,
+    //         currentMediaStatus: data.myMediaStatus
+    //     });
+
+    //     io.to(data.to).emit("callAccepted", data);
+    // })
+
+    // // Ending Call
+    // socket.on("endCall", ({id})=>{
+    //     io.to(id).emit("endCall")
+    // })
 
     // Joining Chat room
     socket.on('join chat', (room) => {
@@ -54,6 +89,7 @@ io.on('connection', (socket) => {
     socket.on('typing', (room) => socket.in(room).emit('typing'));
     socket.on('stop typing', (room) => socket.in(room).emit('stop typing'));
 
+    // Sending new Message
     socket.on('new message', (newMessageRecieved) => {
         let chat = newMessageRecieved.chat;
         console.log(newMessageRecieved);

@@ -225,6 +225,7 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
 
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
 
+    console.log(keyword);
     res.status(200).json({
         success: true,
         users,
