@@ -26,11 +26,9 @@ router.route('/password/reset/:token').put(resetPassword);
 
 router.route('/otp').post(matchOtp);
 
-router.route('/searchUser').get(isAuthenticated, allUsers);
+router.route('/users').get(isAuthenticated, allUsers);
 
 router.route('/me').get(isAuthenticated, userProfile);
-
-router.route('/users').get(getAllUsers);
 
 router.route('/user/:id').put(editUserRole);
 
