@@ -226,33 +226,18 @@ exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
-    const { user, role, projectId } = req.body; // user is actually user's mongodb _id
-    console.log(user, role, projectId);
+    const { user, role, projectId } = req.body; // 'user' here is actually user's mongodb '_id'
 
     const u = await Projects.updateOne(
         {
             _id: projectId,
         },
         {
-            // $push: {
-            //     assignedPeople: user,
-            //     role: role
-            // },
             $push: {
                 assignedPeople: { assignedUser: user, role: role },
             },
         },
     );
-
-    // const userData = await User.findByIdAndUpdate(user, { role }, { runValidators: false });
-    // const updated = await Projects.updateOne({
-    //     _id: projectId
-    // }, {
-    //     $push: {
-    //         assignedPeople: user,
-    //         role: role
-    //     }
-    // })
 
     res.status(200).json({
         success: true,
