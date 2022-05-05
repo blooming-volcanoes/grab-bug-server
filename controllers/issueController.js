@@ -20,7 +20,7 @@ exports.createIssues = catchAsyncErrors(async (req, res) => {
 // Read an issue (GET)
 exports.getAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
-    const result = await Issue.findOne({ _id: issueId });
+    const result = await Issue.findOne({ _id: issueId }).populate('project');
     res.send({
         success: true,
         result,
