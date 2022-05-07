@@ -65,6 +65,7 @@ exports.addCommentToIssue = catchAsyncErrors(async (req, res) => {
                 },
             },
         },
+        { new: true },
     );
     res.send({
         success: true,
