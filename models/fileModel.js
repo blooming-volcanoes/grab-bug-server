@@ -6,9 +6,13 @@ const file = mongoose.Schema(
             type: String,
             required: true,
         },
+        name: {
+            type: String,
+        },
         attachments: [
             {
-                type: String,
+                fileName: String,
+                path: String,
             },
         ],
     },

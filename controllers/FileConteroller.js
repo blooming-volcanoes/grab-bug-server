@@ -14,10 +14,16 @@ exports.uploadAttachments = catchAsyncErrors(async (req, res, next) => {
 
     const isEmailExists = await File.findOne({ email: req.body.email });
 
+    console.log(req.file);
+
     if (isEmailExists) {
+        const data = {
+            fileName: req.file.originalname,
+            path: upload.secure_url,
+        };
         const result = await File.findOneAndUpdate(
             { email: req.body.email },
-            { $push: { attachments: upload.secure_url } },
+            { $push: { attachments: data } },
             { new: true },
         );
 
@@ -28,7 +34,11 @@ exports.uploadAttachments = catchAsyncErrors(async (req, res, next) => {
     } else {
         const data = {
             email: req.body.email,
-            attachments: [upload.secure_url],
+            name: req.body.name,
+            attachments: {
+                fileName: req.file.originalname,
+                path: upload.secure_url,
+            },
         };
         const result = await File.create(data);
         res.status(200).json({
