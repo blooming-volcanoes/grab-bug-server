@@ -4,7 +4,7 @@ const ErrorHandler = require('../lib/errorHandler');
 
 const catchAsyncErrors = require('./catchAsyncErrors');
 
-const User = require('../models/User');
+const Users = require('../models/User');
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
     const { authorization } = req.headers;

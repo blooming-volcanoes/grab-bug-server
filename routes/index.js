@@ -7,9 +7,13 @@ const router = require('express').Router();
 const userRouter = require('./userRoutes');
 const issuesRoutes = require('./issuesRoutes');
 const projecRoutes = require('./projectRoutes');
+const chatRoutes = require('./chatRoutes');
+const messageRoutes = require('./messageRoutes');
 
 router.use(userRouter);
 router.use(issuesRoutes);
 router.use(projecRoutes);
+router.use(chatRoutes);
+router.use(messageRoutes);
 
 module.exports = router;
