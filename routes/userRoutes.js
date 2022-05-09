@@ -30,6 +30,6 @@ router.route('/users').get(isAuthenticated, allUsers);
 
 router.route('/me').get(isAuthenticated, userProfile);
 
-router.route('/user/:id').put(editUserRole);
+router.route('/user').put(editUserRole);
 
 module.exports = router;
