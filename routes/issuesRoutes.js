@@ -7,6 +7,7 @@ const {
     deleteAnIssue,
     getArchive,
     getAllArchive,
+    addCommentToIssue,
 } = require('../controllers/issueController');
 /*
  all major routes routes for issues
@@ -23,6 +24,10 @@ router.route('/issue/:issueId').get(getAnIssue).put(updateAnIssue).delete(delete
 // post a issue
 
 router.post('/issue', createIssues);
+
+// add comment to an issue
+
+router.put('/comment/:issueId', addCommentToIssue);
 
 // get all deleted issue
 

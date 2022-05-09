@@ -31,6 +31,16 @@ const Issue = mongoose.Schema(
             ref: 'Projects',
             required: [true, 'Project Id is needed'],
         },
+        comments: [
+            {
+                text: String,
+                commentedBy: String,
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+            },
+        ],
     },
     { timestamps: true },
 );

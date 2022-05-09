@@ -6,8 +6,8 @@ const sendToken = require('../lib/jwt');
 const sendEmail = require('../lib/sendEmail');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Users = require('../models/User');
+const { Projects } = require('../models/Project');
 const generate = require('../middleware/generate');
-const User = require('../models/User');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -233,7 +233,7 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
-    const users = await User.find({});
+    const users = await Users.find({});
     res.status(200).json({
         success: true,
         users,
@@ -255,11 +255,21 @@ exports.userProfile = catchAsyncErrors(async (req, res, next) => {
 // edit user role
 
 exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params;
-    const { role } = req.body;
-    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
+    const { user, role, projectId } = req.body; // 'user' here is actually user's mongodb '_id'
+
+    const u = await Projects.updateOne(
+        {
+            _id: projectId,
+        },
+        {
+            $push: {
+                assignedPeople: { assignedUser: user, role: role },
+            },
+        },
+    );
+
     res.status(200).json({
         success: true,
-        user,
+        user: u,
     });
 });
