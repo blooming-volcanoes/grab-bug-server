@@ -27,7 +27,6 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     // Use try catch cause of async fn, to detect unnecessay bug easily
     try {
         if (!user) {
-            console.log('heoll');
             const newUser = await Users.create({
                 email,
                 password,
@@ -51,12 +50,14 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
             if user want get another otp,
             Existing Otp will be replaced with refres otp
             */
-            const refreshOtp = await Users.updateOne({
+            const refreshOtp = await Users.findOne({
                 email,
-                otp,
-                OTPExpire: Date.now() + 3 * 60 * 1000,
             });
-            console.log(refreshOtp, 'refrest');
+
+            refreshOtp.otp = otp;
+            refreshOtp.OTPExpire = Date.now() + 3 * 60 * 1000;
+            await refreshOtp.save();
+
             await sendEmail({
                 email: req.body.email,
                 subject: 'Issue Tracker  Verify OTP',
@@ -85,8 +86,6 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
     // finding otp with Date value
     const user = await Users.findOne({ email, OTPExpire: { $gt: Date.now() } });
 
-    console.log('hlloo ', user);
-
     // If OTP expire, this error will be shown
     if (!user) {
         return next(new ErrorHandler('Your otp expired'));
@@ -94,23 +93,23 @@ exports.matchOtp = catchAsyncErrors(async (req, res, next) => {
 
     // Comparing both OTP to check whether true
     const isMatched = await bcrypt.compare(req.body.code, user.otp);
-    console.log(user.otp, 'he', isMatched, 'lam', req.body.code);
 
     if (!isMatched) {
         return next(new ErrorHandler('You otp didn not matched'));
     }
 
-    console.log(isMatched);
-
     // if otp matched status will updated and otp will be undefined
     if (isMatched) {
         user.otp = undefined;
         user.status = 'approve';
-        console.log(user);
-        await user.save({ validateBeforeSave: false });
+        user.OTPExpire = undefined;
+
+        user.save();
+
+        const getUser = user;
 
         // By calling this fn i am sending user data with jwt token
-        sendToken(user, res, 200);
+        sendToken(getUser, res, 200);
     }
 });
 
@@ -155,8 +154,6 @@ exports.forgotPassword = catchAsyncErrors(async (req, res, next) => {
 
     // Get ResetPassword Token
     const resetToken = user.getResetPasswordToken();
-
-    console.log(resetToken.toString());
 
     await user.save({ validateBeforeSave: false });
 
@@ -214,9 +211,27 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
     sendToken(user, res, 200);
 });
 
-/*
-get all users
-*/
+// allUsers search
+
+exports.allUsers = catchAsyncErrors(async (req, res, next) => {
+    const keyword = req.query.search
+        ? {
+              $or: [
+                  { name: { $regex: req.query.search, $options: 'i' } },
+                  { email: { $regex: req.query.search, $options: 'i' } },
+              ],
+          }
+        : {};
+
+    const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
+
+    console.log(keyword);
+    res.status(200).json({
+        success: true,
+        users,
+    });
+});
+
 exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
     const users = await Users.find({});
     res.status(200).json({
@@ -224,6 +239,20 @@ exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
         users,
     });
 });
+
+// get user Profile
+
+exports.userProfile = catchAsyncErrors(async (req, res, next) => {
+    const id = req.user._id;
+    const user = await User.findById(id);
+
+    res.status(200).json({
+        success: true,
+        user,
+    });
+});
+
+// edit user role
 
 exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
     const { user, role, projectId } = req.body; // 'user' here is actually user's mongodb '_id'
