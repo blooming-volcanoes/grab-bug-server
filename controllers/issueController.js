@@ -5,15 +5,27 @@ const Errorhandler = require('../lib/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Issue = require('../models/Issue');
 const Archive = require('../models/issuesArchives');
+const { Projects } = require('../models/Project');
 
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
     const issue = req.body;
-    const result = await new Issue(issue).save();
-    res.send({
-        success: true,
-        result,
-    });
+    const newIssue = await new Issue(issue).save();
+    if (newIssue._id) {
+        const data = await Projects.findByIdAndUpdate(
+            { _id: issue.project },
+            {
+                $push: {
+                    issues: newIssue,
+                },
+            },
+        );
+        console.log(data);
+        res.send({
+            success: true,
+            result: newIssue,
+        });
+    }
 });
 
 // Read an issue (GET)

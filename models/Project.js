@@ -21,6 +21,13 @@ const projectSchema = new mongoose.Schema(
                 role: String,
             },
         ],
+        issues: [
+            {
+                type: mongoose.Types.ObjectId,
+                ref: 'Issue',
+                issue: Object,
+            },
+        ],
         deadline: {
             type: Date,
         },
