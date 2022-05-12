@@ -1,0 +1,36 @@
+{
+    "name": "issue-tracker-server",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "start": "node index.js",
+        "start-dev": "nodemon index.js",
+        "prepare": "husky install"
+    },
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "cloudinary": "^1.29.0",
+        "cors": "^2.8.5",
+        "dotenv": "^16.0.0",
+        "express": "^4.17.3",
+        "i": "^0.3.7",
+        "jsonwebtoken": "^8.5.1",
+        "mongoose": "^6.2.10",
+        "multer": "^1.4.4",
+        "nodemailer": "^6.7.3",
+        "otp-generator": "^4.0.0",
+        "peer": "0.6.1",
+        "socket.io": "^4.5.0"
+    },
+    "devDependencies": {
+        "eslint": "8.2.0",
+        "eslint-config-airbnb-base": "15.0.0",
+        "eslint-config-prettier": "^8.5.0",
+        "eslint-plugin-import": "2.25.2",
+        "eslint-plugin-prettier": "^4.0.0",
+        "husky": "^7.0.0",
+        "prettier": "^2.6.2",
+        "pretty-quick": "^3.1.3"
+    }
+}
