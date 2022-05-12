@@ -26,6 +26,4 @@ const test = io.on('connection', (socket) => {
     });
 });
 
-socketServer.listen(port, () => console.log(`Server is running on port ${port}`));
-
 module.exports = test;

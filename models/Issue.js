@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const Issue = mongoose.Schema(
+const Issue = new mongoose.Schema(
     {
         reporter_name: {
             type: String,
