@@ -22,6 +22,7 @@ const Issue = mongoose.Schema(
             default: 'high',
             required: [true, 'Please give a bug category'],
         },
+
         bugDescription: {
             type: String,
             required: [true, 'Please give a description'],

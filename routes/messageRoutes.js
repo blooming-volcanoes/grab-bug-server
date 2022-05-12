@@ -1,4 +1,4 @@
-const {  createMessage, getConversation, getMessage } = require('../controllers/messageController');
+const { createMessage, getConversation, getMessage } = require('../controllers/messageController');
 
 const { isAuthenticated } = require('../middleware/auth');
 
