@@ -71,7 +71,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
         }
     } catch (err) {
         // if there is any error happened otp and expire date will be undefined
-    
+
         user.OTPExpire = undefined;
         user[0].otp = undefined;
         await user.save({ validateBeforeSave: false });
