@@ -32,6 +32,6 @@ router.route('/all-users').get(getAllUsers);
 
 router.route('/me').get(isAuthenticated, userProfile);
 
-router.route('/user').put(editUserRole);
+router.route('/edit-user-role').put(editUserRole);
 
 module.exports = router;

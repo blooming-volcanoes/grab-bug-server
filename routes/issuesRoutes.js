@@ -9,6 +9,7 @@ const {
     getAllArchive,
     addCommentToIssue,
 } = require('../controllers/issueController');
+const upload = require('../lib/multer');
 /*
  all major routes routes for issues
 */
