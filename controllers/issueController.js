@@ -19,7 +19,7 @@ exports.createIssues = catchAsyncErrors(async (req, res) => {
 // Read an issue (GET)
 exports.getAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
-    const result = await Issue.findOne({ _id: issueId }).populate('project');
+    const result = await Issue.findOne({ _id: issueId });
     res.send({
         success: true,
         result,
@@ -45,33 +45,12 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
     });
 });
 
-// add comment to an issue (PUT)
-exports.addCommentToIssue = catchAsyncErrors(async (req, res) => {
-    const { issueId } = req.params;
-    const comment = Object.keys(req.body)[0];
-    // const comment = 'my cute comment';
-    // rather that getting the comment directly in the body,
-    // I was getting it as an object like this: {'my cute comment': ''}
-    // only after using express.urlencoded({extended: true})
-    // I need to fix this later
-
-    const result = await Issue.findByIdAndUpdate(
-        { _id: issueId },
-        {
-            $push: {
-                comments: {
-                    text: comment,
-                    commentedBy: 'Mr. XYX',
-                },
-            },
-        },
-        { new: true },
-    );
-    res.send({
-        success: true,
-        result,
-    });
-});
+// Update the status of an issue (PUT) : - not useable
+// exports.updateStatus = catchAsyncErrors(async (req, res) => {
+//     const { issueId } = req.params;
+//     const result = await Issue.findOne({ _id: issueId }, req.body.status, { new: true });
+//     res.send(result);
+// });
 
 // Delete an issue (DELETE)
 exports.deleteAnIssue = catchAsyncErrors(async (req, res) => {

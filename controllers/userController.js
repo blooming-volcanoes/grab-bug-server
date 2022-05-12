@@ -6,8 +6,8 @@ const sendToken = require('../lib/jwt');
 const sendEmail = require('../lib/sendEmail');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Users = require('../models/User');
-const { Projects } = require('../models/Project');
 const generate = require('../middleware/generate');
+const User = require('../models/User');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -71,7 +71,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
         }
     } catch (err) {
         // if there is any error happened otp and expire date will be undefined
-        console.log(err.message);
+    
         user.OTPExpire = undefined;
         user[0].otp = undefined;
         await user.save({ validateBeforeSave: false });
@@ -225,7 +225,6 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
 
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
 
-    console.log(keyword);
     res.status(200).json({
         success: true,
         users,
@@ -233,7 +232,7 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
-    const users = await Users.find({});
+    const users = await User.find({});
     res.status(200).json({
         success: true,
         users,
@@ -255,21 +254,11 @@ exports.userProfile = catchAsyncErrors(async (req, res, next) => {
 // edit user role
 
 exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
-    const { user, role, projectId } = req.body; // 'user' here is actually user's mongodb '_id'
-
-    const u = await Projects.updateOne(
-        {
-            _id: projectId,
-        },
-        {
-            $push: {
-                assignedPeople: { assignedUser: user, role: role },
-            },
-        },
-    );
-
+    const { id } = req.params;
+    const { role } = req.body;
+    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
     res.status(200).json({
         success: true,
-        user: u,
+        user,
     });
 });
