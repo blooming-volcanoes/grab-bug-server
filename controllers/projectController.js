@@ -27,7 +27,8 @@ exports.singleProject = catchAsyncErrors(async (req, res) => {
     const { id } = req.params;
     const project = await Projects.findById(id)
         .populate('assignedPeople.assignedUser', 'name email')
-        .populate('createdBy', 'email name');
+        .populate('createdBy', 'email name')
+        .populate('issues');
     res.status(200).json({
         success: true,
         project,
