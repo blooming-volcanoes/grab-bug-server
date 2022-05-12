@@ -10,7 +10,6 @@ const cloudinary = require('../lib/cloudinary');
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
     const issue = req.body;
-    console.log(issue);
     const result = await new Issue(issue).save();
     res.send({
         success: true,

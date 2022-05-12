@@ -26,6 +26,10 @@ router.route('/issue/:issueId').get(getAnIssue).put(updateAnIssue).delete(delete
 
 router.post('/issue', createIssues);
 
+// add comment to an issue
+
+router.put('/comment/:issueId', addCommentToIssue);
+
 // get all deleted issue
 
 router.get('/all', getAllArchive);

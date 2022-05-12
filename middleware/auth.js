@@ -7,16 +7,13 @@ const catchAsyncErrors = require('./catchAsyncErrors');
 const Users = require('../models/User');
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
-    // console.log(req.hea);
     const authorization = req.headers.authorization.split(' ')[1];
     if (!authorization) {
         return next(new ErrorHandler('Please Login to access this resource', 401));
     }
 
     const decodeData = jwt.verify(authorization, process.env.JWT_SECRET);
-
     req.user = await Users.findById(decodeData.id);
-
     next();
 });
 

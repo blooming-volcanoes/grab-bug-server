@@ -71,7 +71,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
         }
     } catch (err) {
         // if there is any error happened otp and expire date will be undefined
-        console.log(err.message);
+
         user.OTPExpire = undefined;
         user[0].otp = undefined;
         await user.save({ validateBeforeSave: false });
@@ -225,7 +225,6 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
 
     const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
 
-    console.log(keyword);
     res.status(200).json({
         success: true,
         users,
