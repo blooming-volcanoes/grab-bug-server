@@ -7,7 +7,7 @@ const db_uri =
 
 const connectDb = async () => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/issue-tracker', {
+        await mongoose.connect(db_uri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });

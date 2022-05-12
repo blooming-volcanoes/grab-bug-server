@@ -30,6 +30,10 @@ router.route('/users').get(isAuthenticated, allUsers);
 
 router.route('/me').get(isAuthenticated, userProfile);
 
+<<<<<<< HEAD
+router.route('/user/:id').put(editUserRole);
+=======
 router.route('/user').put(editUserRole);
+>>>>>>> 1865a41b54fb7a00fc7d227154802b8b29b9076c
 
 module.exports = router;
