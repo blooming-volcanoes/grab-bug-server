@@ -126,6 +126,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
     const user = await Users.findOne({ email, status: 'approve' }).select('+password');
 
+    console.log(user);
     // await Users.findOne({ email }).select('+password');
 
     if (!user) {
@@ -214,6 +215,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 // allUsers search
 
 exports.allUsers = catchAsyncErrors(async (req, res, next) => {
+    console.log(req.user);
     const keyword = req.query.search
         ? {
               $or: [
@@ -233,6 +235,7 @@ exports.allUsers = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+    console.log('hello');
     const users = await Users.find({});
     res.status(200).json({
         success: true,

@@ -11,7 +11,7 @@ const Issue = mongoose.Schema(
         },
         severity: {
             type: String,
-            enum: ['low', 'moderate', 'high', 'extreme'],
+            enum: ['low', 'moderate', 'high', 'extreme', 'critical'],
         },
         status: {
             type: String,

@@ -28,6 +28,8 @@ router.route('/otp').post(matchOtp);
 
 router.route('/users').get(isAuthenticated, allUsers);
 
+router.route('/all-users').get(getAllUsers);
+
 router.route('/me').get(isAuthenticated, userProfile);
 
 router.route('/user').put(editUserRole);
