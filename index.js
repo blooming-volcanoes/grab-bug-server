@@ -4,8 +4,9 @@ const cors = require('cors');
 require('dotenv').config();
 const connectDb = require('./db/connectDB');
 const routes = require('./routes/index');
-const { ExpressPeerServer } = require('peer')
-const path = require('path')
+const { ExpressPeerServer } = require('peer');
+const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = require('express')();
 
@@ -22,32 +23,26 @@ app.use(express.json());
 // connect with mongoDb function
 connectDb();
 
-
-// Socket 
-const http = require('http').createServer(app)
+// Socket
+const http = require('http').createServer(app);
 const io = require('socket.io')(http, {
     cors: {
-      origin: "*",
-      methods: ["GET", "POST"]
-    }
-  });
+        origin: '*',
+        methods: ['GET', 'POST'],
+    },
+});
 
-io.on('connection', socket=>{
-  console.log('a user connected: ' + socket.id);
+io.on('connection', (socket) => {
+    console.log('a user connected: ' + socket.id);
 
     //   socket.on('joinUser', id=>{
     //     console.log({id}, 'form id');
     // })
-    socketServer(socket)
-
-})
-
+    socketServer(socket);
+});
 
 // Create peer server
-ExpressPeerServer(http, { path: '/' })
-
-
-
+ExpressPeerServer(http, { path: '/' });
 
 // import routes
 app.use(routes);
@@ -63,10 +58,6 @@ app.get('/', (req, res) => {
 
 app.use(errorMiddleware);
 
- http.listen(port, () => {
+http.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-
-
-
-
