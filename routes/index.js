@@ -7,14 +7,14 @@ const router = require('express').Router();
 const userRouter = require('./userRoutes');
 const issuesRoutes = require('./issuesRoutes');
 const projecRoutes = require('./projectRoutes');
-// const chatRoutes = require('./chatRoutes');
+const twilioSmsRoute = require('./twilioSmsRoutes');
 const messageRoutes = require('./messageRoutes');
 const FileRoutes = require('./FileRoutes');
 
 router.use(userRouter);
 router.use(issuesRoutes);
 router.use(projecRoutes);
-// router.use(chatRoutes);
+router.use(twilioSmsRoute);
 router.use(messageRoutes);
 router.use(FileRoutes);
 

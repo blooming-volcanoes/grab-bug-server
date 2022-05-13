@@ -6,6 +6,7 @@ const connectDb = require('./db/connectDB');
 const routes = require('./routes/index');
 const { ExpressPeerServer } = require('peer');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = require('express')();
 
