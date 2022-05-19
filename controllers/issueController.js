@@ -57,13 +57,6 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
     });
 });
 
-// Update the status of an issue (PUT) : - not useable
-// exports.updateStatus = catchAsyncErrors(async (req, res) => {
-//     const { issueId } = req.params;
-//     const result = await Issue.findOne({ _id: issueId }, req.body.status, { new: true });
-//     res.send(result);
-// });
-
 // add comment to an issue (PUT)
 exports.addCommentToIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
