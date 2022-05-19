@@ -7,6 +7,7 @@ const catchAsyncErrors = require('./catchAsyncErrors');
 const Users = require('../models/User');
 
 exports.isAuthenticated = catchAsyncErrors(async (req, res, next) => {
+    console.log(req.headers.authorization, 'auth');
     const authorization = req.headers.authorization.split(' ')[1];
     if (!authorization) {
         return next(new ErrorHandler('Please Login to access this resource', 401));

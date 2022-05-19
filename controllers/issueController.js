@@ -67,20 +67,17 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
 // add comment to an issue (PUT)
 exports.addCommentToIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
-    const comment = Object.keys(req.body)[0];
-    // const comment = 'my cute comment';
-    // rather that getting the comment directly in the body,
-    // I was getting it as an object like this: {'my cute comment': ''}
-    // only after using express.urlencoded({extended: true})
-    // I need to fix this later
+    // const comment = Object.keys(req.body)[0];
+    const commentInfo = req.body;
+    const { commentText, commenter } = commentInfo;
 
     const result = await Issue.findByIdAndUpdate(
         { _id: issueId },
         {
             $push: {
                 comments: {
-                    text: comment,
-                    commentedBy: 'Mr. XYX',
+                    text: commentText,
+                    commentedBy: commenter,
                 },
             },
         },
