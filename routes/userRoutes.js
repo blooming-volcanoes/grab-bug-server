@@ -9,6 +9,8 @@ const {
     userProfile,
     getAllUsers,
     editUserRole,
+    inviteUser,
+    checkInvitaion,
 } = require('../controllers/userController');
 const { isAuthenticated } = require('../middleware/auth');
 
@@ -31,5 +33,8 @@ router.route('/users').get(isAuthenticated, allUsers);
 router.route('/me').get(isAuthenticated, userProfile);
 
 router.route('/user/:id').put(editUserRole);
+
+router.route('/invite').post(inviteUser);
+router.route('/invitation').get(checkInvitaion);
 
 module.exports = router;

@@ -8,6 +8,8 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Users = require('../models/User');
 const generate = require('../middleware/generate');
 const User = require('../models/User');
+const InviteUser = require('../models/inviteUser');
+const { options } = require('../routes/userRoutes');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -261,4 +263,58 @@ exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
         success: true,
         user,
     });
+});
+
+exports.inviteUser = catchAsyncErrors(async (req, res, next) => {
+    const token = crypto.randomBytes(5).toString('hex');
+    const { email } = req.body;
+    const boardId = 'mi3md38fj3';
+    const expireToken = Date.now() + 24 * 60 * 60 * 1000;
+
+    const all = { token, expireToken, boardId };
+    const invitation = await InviteUser.create(all);
+
+    const invitationUrl = `${req.protocol}://${req.headers.host}/invitation?token=${token}/boardId=${boardId}`;
+
+    const options = {
+        email: email,
+        subject: 'You have got the invitation link to register in Issue Tracker',
+        message: `Here is Your invitation link ${invitationUrl} `,
+    };
+
+    try {
+        await sendEmail(options);
+
+        res.status(200).json({
+            success: true,
+            message: `Invitation Email sent to ${email} successfully`,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: ` ${err.message} `,
+        });
+
+        console.log(err);
+    }
+});
+
+exports.checkInvitaion = catchAsyncErrors(async (req, res, next) => {
+    const { token, boardId } = req.query;
+
+    console.log(token, boardId, 'cehc');
+
+    const user = await InviteUser.findOne({
+        token,
+        expireToken: { $gt: Date.now() },
+    });
+
+    console.log(user);
+    if (user) {
+    } else {
+        res.status(200).json({
+            success: true,
+            message: `Sorry your token is invalid or expired`,
+        });
+    }
 });
