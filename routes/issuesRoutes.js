@@ -7,7 +7,6 @@ const {
     deleteAnIssue,
     getArchive,
     getAllArchive,
-    uploadAttachments,
     addCommentToIssue,
 } = require('../controllers/issueController');
 const upload = require('../lib/multer');

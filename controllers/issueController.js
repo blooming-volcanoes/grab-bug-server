@@ -5,22 +5,33 @@ const Errorhandler = require('../lib/errorHandler');
 const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Issue = require('../models/Issue');
 const Archive = require('../models/issuesArchives');
-const cloudinary = require('../lib/cloudinary');
+const { Projects } = require('../models/Project');
 
 // Create an issue (POST)
 exports.createIssues = catchAsyncErrors(async (req, res) => {
     const issue = req.body;
-    const result = await new Issue(issue).save();
-    res.send({
-        success: true,
-        result,
-    });
+    const newIssue = await new Issue(issue).save();
+    if (newIssue._id) {
+        const data = await Projects.findByIdAndUpdate(
+            { _id: issue.project },
+            {
+                $push: {
+                    issues: newIssue,
+                },
+            },
+        );
+        console.log(data);
+        res.send({
+            success: true,
+            result: newIssue,
+        });
+    }
 });
 
 // Read an issue (GET)
 exports.getAnIssue = catchAsyncErrors(async (req, res) => {
     const { issueId } = req.params;
-    const result = await Issue.findOne({ _id: issueId });
+    const result = await Issue.findOne({ _id: issueId }).populate('project');
     res.send({
         success: true,
         result,
@@ -46,12 +57,30 @@ exports.updateAnIssue = catchAsyncErrors(async (req, res) => {
     });
 });
 
-// Update the status of an issue (PUT) : - not useable
-// exports.updateStatus = catchAsyncErrors(async (req, res) => {
-//     const { issueId } = req.params;
-//     const result = await Issue.findOne({ _id: issueId }, req.body.status, { new: true });
-//     res.send(result);
-// });
+// add comment to an issue (PUT)
+exports.addCommentToIssue = catchAsyncErrors(async (req, res) => {
+    const { issueId } = req.params;
+    // const comment = Object.keys(req.body)[0];
+    const commentInfo = req.body;
+    const { commentText, commenter } = commentInfo;
+
+    const result = await Issue.findByIdAndUpdate(
+        { _id: issueId },
+        {
+            $push: {
+                comments: {
+                    text: commentText,
+                    commentedBy: commenter,
+                },
+            },
+        },
+        { new: true },
+    );
+    res.send({
+        success: true,
+        result,
+    });
+});
 
 // add comment to an issue (PUT)
 exports.addCommentToIssue = catchAsyncErrors(async (req, res) => {

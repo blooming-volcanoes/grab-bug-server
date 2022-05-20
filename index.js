@@ -6,6 +6,7 @@ const connectDb = require('./db/connectDB');
 const routes = require('./routes/index');
 const { ExpressPeerServer } = require('peer');
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = require('express')();
 
@@ -17,6 +18,7 @@ const socketServer = require('./socketServer');
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // connect with mongoDb function
 connectDb();

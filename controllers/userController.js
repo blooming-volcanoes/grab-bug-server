@@ -8,6 +8,9 @@ const catchAsyncErrors = require('../middleware/catchAsyncErrors');
 const Users = require('../models/User');
 const generate = require('../middleware/generate');
 const User = require('../models/User');
+const InviteUser = require('../models/inviteUser');
+const { options } = require('../routes/userRoutes');
+const { Projects } = require('../models/Project');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -126,6 +129,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
     const user = await Users.findOne({ email, status: 'approve' }).select('+password');
 
+    console.log(user);
     // await Users.findOne({ email }).select('+password');
 
     if (!user) {
@@ -214,6 +218,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 // allUsers search
 
 exports.allUsers = catchAsyncErrors(async (req, res, next) => {
+    console.log(req.user);
     const keyword = req.query.search
         ? {
               $or: [
@@ -254,11 +259,77 @@ exports.userProfile = catchAsyncErrors(async (req, res, next) => {
 // edit user role
 
 exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params;
-    const { role } = req.body;
-    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
+    const { user, role, projectId } = req.body; // user is actually user's mongodb _id
+    console.log(user, role, projectId);
+
+    const u = await Projects.updateOne(
+        {
+            _id: projectId,
+        },
+        {
+            $push: {
+                assignedPeople: { assignedUser: user, role: role },
+            },
+        },
+    );
+
     res.status(200).json({
         success: true,
         user,
+        user: u,
     });
+});
+
+exports.inviteUser = catchAsyncErrors(async (req, res, next) => {
+    const token = crypto.randomBytes(5).toString('hex');
+    const { email } = req.body;
+    const boardId = 'mi3md38fj3';
+    const expireToken = Date.now() + 24 * 60 * 60 * 1000;
+
+    const all = { token, expireToken, boardId };
+    const invitation = await InviteUser.create(all);
+
+    const invitationUrl = `${req.protocol}://${req.headers.host}/invitation?token=${token}/boardId=${boardId}`;
+
+    const options = {
+        email: email,
+        subject: 'You have got the invitation link to register in Issue Tracker',
+        message: `Here is Your invitation link ${invitationUrl} `,
+    };
+
+    try {
+        await sendEmail(options);
+
+        res.status(200).json({
+            success: true,
+            message: `Invitation Email sent to ${email} successfully`,
+        });
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: ` ${err.message} `,
+        });
+
+        console.log(err);
+    }
+});
+
+exports.checkInvitaion = catchAsyncErrors(async (req, res, next) => {
+    const { token, boardId } = req.query;
+
+    console.log(token, boardId, 'cehc');
+
+    const user = await InviteUser.findOne({
+        token,
+        expireToken: { $gt: Date.now() },
+    });
+
+    console.log(user);
+    if (user) {
+    } else {
+        res.status(200).json({
+            success: true,
+            message: `Sorry your token is invalid or expired`,
+        });
+    }
 });
