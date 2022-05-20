@@ -10,6 +10,7 @@ const generate = require('../middleware/generate');
 const User = require('../models/User');
 const InviteUser = require('../models/inviteUser');
 const { options } = require('../routes/userRoutes');
+const { Projects } = require('../models/Project');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     const { name, email, password } = req.body;
@@ -128,6 +129,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
 
     const user = await Users.findOne({ email, status: 'approve' }).select('+password');
 
+    console.log(user);
     // await Users.findOne({ email }).select('+password');
 
     if (!user) {
@@ -216,6 +218,7 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
 // allUsers search
 
 exports.allUsers = catchAsyncErrors(async (req, res, next) => {
+    console.log(req.user);
     const keyword = req.query.search
         ? {
               $or: [
@@ -256,12 +259,24 @@ exports.userProfile = catchAsyncErrors(async (req, res, next) => {
 // edit user role
 
 exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
-    const { id } = req.params;
-    const { role } = req.body;
-    const user = await User.findByIdAndUpdate(id, { role }, { runValidators: false });
+    const { user, role, projectId } = req.body; // user is actually user's mongodb _id
+    console.log(user, role, projectId);
+
+    const u = await Projects.updateOne(
+        {
+            _id: projectId,
+        },
+        {
+            $push: {
+                assignedPeople: { assignedUser: user, role: role },
+            },
+        },
+    );
+
     res.status(200).json({
         success: true,
         user,
+        user: u,
     });
 });
 

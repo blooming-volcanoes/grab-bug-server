@@ -18,6 +18,7 @@ const socketServer = require('./socketServer');
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // connect with mongoDb function
 connectDb();

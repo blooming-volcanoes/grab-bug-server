@@ -7,6 +7,33 @@ const projectSchema = new mongoose.Schema({
     description: {
         type: String,
     },
+    createdBy: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Users',
+    },
+    assignedPeople: [
+        {
+            assignedUser: {
+                type: mongoose.Types.ObjectId,
+                ref: 'Users',
+            },
+            role: String,
+        },
+    ],
+    issues: [
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'Issue',
+            issue: Object,
+        },
+    ],
+    deadline: {
+        type: Date,
+    },
+
+    description: {
+        type: String,
+    },
     created_By: {
         type: mongoose.Types.ObjectId,
         ref: 'User',
