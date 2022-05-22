@@ -34,6 +34,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user',
     },
+    projects: [
+        {
+            projectId: mongoose.Types.ObjectId,
+            role: String,
+        },
+    ],
     status: {
         type: String,
         default: 'pending',

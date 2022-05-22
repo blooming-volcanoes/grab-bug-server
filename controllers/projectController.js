@@ -16,7 +16,8 @@ exports.projects = catchAsyncErrors(async (req, res) => {
     //  Project creator id
     const project = await Projects.create({ ...req.body, createdBy: req.user._id });
     // the project is created
-    // now take the project _id, query the project, push the project creator to it's assignedPeople array and assign a role of 'admin' to the user
+    // now take the project _id, query the project,
+    // push the project creator to it's assignedPeople array and assign a role of 'admin' to the user
     const projectUpdated = await Projects.findByIdAndUpdate(
         { _id: project._id },
         {
@@ -27,9 +28,19 @@ exports.projects = catchAsyncErrors(async (req, res) => {
         { new: true },
     );
     // from 'users' collection, modify the user's 'isActive' property to 'true'
+    await Users.findByIdAndUpdate({ _id: req.user._id }, { isActive: true }, { new: true });
+    // from 'users' collection, for the current user who just created the project,
+    // populate the 'projects' array with the newly created project id
     const updatedUser = await Users.findByIdAndUpdate(
         { _id: req.user._id },
-        { isActive: true },
+        {
+            $push: {
+                projects: {
+                    projectId: project._id,
+                    role: 'admin',
+                },
+            },
+        },
         { new: true },
     );
     res.status(200).json({
