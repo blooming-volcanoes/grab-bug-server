@@ -34,6 +34,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: 'user',
     },
+    projects: [
+        {
+            projectId: mongoose.Types.ObjectId,
+            role: String,
+        },
+    ],
     status: {
         type: String,
         default: 'pending',
@@ -41,6 +47,10 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now,
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
     },
 
     resetPasswordToken: String,
