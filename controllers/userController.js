@@ -44,15 +44,15 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
                 password,
                 name,
                 otp,
-                OTPExpire: Date.now() + 1 * 60 * 1000,
+                OTPExpire: Date.now() + 2 * 60 * 1000,
             });
 
             // Sending Email using nodemailer
-            // await sendEmail({
-            //     email: newUser.email,
-            //     subject: 'Issue Tracker Verify OTP',
-            //     message: `Your new user OTP for Email Verification is ${x}`,
-            // });
+            await sendEmail({
+                email: newUser.email,
+                subject: 'Issue Tracker Verify OTP',
+                message: `Your new user OTP for Email Verification is ${x}`,
+            });
 
             // Push project Id into User
             console.log(checkInvitation);
@@ -64,7 +64,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 
                     {
                         $push: {
-                            projects: { projectId: newUser._id, role: role },
+                            projects: { projectId: projectId, role: role },
                         },
                     },
                 );
@@ -75,7 +75,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
                     },
                     {
                         $push: {
-                            assignedPeople: { assignedUser: updateUser._id, role: role },
+                            assignedPeople: { assignedUser: newUser._id, role: role },
                         },
                     },
                 );
@@ -321,7 +321,6 @@ exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
 exports.inviteUser = catchAsyncErrors(async (req, res, next) => {
     const token = crypto.randomBytes(5).toString('hex');
     const { email, projectId, role } = req.body;
-    const boardId = '628bbc406c3557f15fa7da5c';
     const expireToken = Date.now() + 72 * 60 * 60 * 1000;
 
     const checkEmail = await InviteUser.findOne({ email });
@@ -330,12 +329,10 @@ exports.inviteUser = catchAsyncErrors(async (req, res, next) => {
         return next(new ErrorHandler('Invitation already sent '));
     }
 
-    const all = { token, expireToken, boardId };
+    const all = { token, expireToken, projectId };
     const invitation = await InviteUser.create(all);
 
-    const invitationUrl = `${req.protocol}://${
-        req.headers.host
-    }/register?token=${token}&projectId=${boardId}&role=${'moderator'}`;
+    const invitationUrl = `${req.protocol}://${req.headers.host}/register?token=${token}&projectId=${projectId}&role=${role}`;
 
     const options = {
         email: email,
