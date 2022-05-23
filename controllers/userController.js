@@ -13,6 +13,15 @@ const { options } = require('../routes/userRoutes');
 const { Projects } = require('../models/Project');
 
 exports.registerUser = catchAsyncErrors(async (req, res, next) => {
+    const { token, projectId, role } = req.query;
+
+    console.log(token, projectId, 'cehc');
+
+    const checkInvitation = await InviteUser.findOne({
+        token,
+        expireToken: { $gt: Date.now() },
+    });
+
     const { name, email, password } = req.body;
 
     // Checking the if the user already approve or not yet regitered
@@ -35,7 +44,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
                 password,
                 name,
                 otp,
-                OTPExpire: Date.now() + 1 * 60 * 1000,
+                OTPExpire: Date.now() + 2 * 60 * 1000,
             });
 
             // Sending Email using nodemailer
@@ -44,6 +53,35 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
                 subject: 'Issue Tracker Verify OTP',
                 message: `Your new user OTP for Email Verification is ${x}`,
             });
+
+            // Push project Id into User
+            console.log(checkInvitation);
+            const id = newUser._id;
+            console.log(id, 'userId');
+            if (checkInvitation) {
+                let updateUser = await User.updateOne(
+                    { email: newUser.email },
+
+                    {
+                        $push: {
+                            projects: { projectId: projectId, role: role },
+                        },
+                    },
+                );
+
+                const updateProject = await Projects.updateOne(
+                    {
+                        _id: projectId,
+                    },
+                    {
+                        $push: {
+                            assignedPeople: { assignedUser: newUser._id, role: role },
+                        },
+                    },
+                );
+                // console.log(updateProject, "updae");
+            }
+
             res.status(200).json({
                 success: true,
                 message: `Email ${newUser.email} sent to  successfully for new user Otp`,
@@ -74,7 +112,7 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
         }
     } catch (err) {
         // if there is any error happened otp and expire date will be undefined
-
+        console.log(err);
         user.OTPExpire = undefined;
         user[0].otp = undefined;
         await user.save({ validateBeforeSave: false });
@@ -282,14 +320,19 @@ exports.editUserRole = catchAsyncErrors(async (req, res, next) => {
 
 exports.inviteUser = catchAsyncErrors(async (req, res, next) => {
     const token = crypto.randomBytes(5).toString('hex');
-    const { email } = req.body;
-    const boardId = 'mi3md38fj3';
-    const expireToken = Date.now() + 24 * 60 * 60 * 1000;
+    const { email, projectId, role } = req.body;
+    const expireToken = Date.now() + 72 * 60 * 60 * 1000;
 
-    const all = { token, expireToken, boardId };
+    const checkEmail = await InviteUser.findOne({ email });
+
+    if (checkEmail) {
+        return next(new ErrorHandler('Invitation already sent '));
+    }
+
+    const all = { token, expireToken, projectId };
     const invitation = await InviteUser.create(all);
 
-    const invitationUrl = `${req.protocol}://${req.headers.host}/invitation?token=${token}/boardId=${boardId}`;
+    const invitationUrl = `${req.protocol}://${req.headers.host}/register?token=${token}&projectId=${projectId}&role=${role}`;
 
     const options = {
         email: email,
@@ -315,15 +358,6 @@ exports.inviteUser = catchAsyncErrors(async (req, res, next) => {
 });
 
 exports.checkInvitaion = catchAsyncErrors(async (req, res, next) => {
-    const { token, boardId } = req.query;
-
-    console.log(token, boardId, 'cehc');
-
-    const user = await InviteUser.findOne({
-        token,
-        expireToken: { $gt: Date.now() },
-    });
-
     console.log(user);
     if (user) {
     } else {
