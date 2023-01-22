@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
     res.send('hello');
 });
 
-app.use(errorMiddleware);
+// app.use(errorMiddleware);
 
 http.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
