@@ -37,6 +37,12 @@ jobs:
               uses: actions/setup-node@v3
               with:
                   node-version: 18.x
+                  - name: Cache dependencies
+                  uses: actions/cache@v3
+                  with:
+                    path: |
+                      **/node_modules
+                    key: ${{ runner.os }}-${{ hashFiles('**/package.lock') }}
             - name: Copy env file
               run: |
                   touch .env
